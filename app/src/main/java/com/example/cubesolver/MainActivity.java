@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_GALLERY_IMAGE = 3; // For gallery intent
 
     // API Key for the Gemini API. IMPORTANT: This should be stored securely, not hardcoded.
-    private static final String GEMINI_API_KEY = "AIzaSyBsEWMMMOn7wMMIw-9AFesV_9nlyU7FXkk"; // Replace with your actual API key
+    private static final String GEMINI_API_KEY = ""; // Replace with your actual API key
 
     // List to store the URIs of the captured or selected images.
     private List<Uri> imageUris = new ArrayList<>();
