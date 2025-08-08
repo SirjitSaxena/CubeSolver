@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- New Professional Palette -->
+    <color name="colorPrimary">#00796B</color> <!-- Teal -->
+    <color name="colorPrimaryDark">#004D40</color> <!-- Dark Teal -->
+    <color name="colorAccent">#FF8F00</color> <!-- Amber -->
+
+    <color name="window_background">#F5F5F5</color> <!-- Very Light Gray -->
+    <color name="surface_color">#FFFFFFFF</color> <!-- White for CardViews, Dialogs etc. -->
+
+    <color name="text_primary">#212121</color> <!-- Almost Black for primary text -->
+    <color name="text_secondary">#757575</color> <!-- Dark Gray for secondary text -->
+    <color name="button_text_color">#FFFFFFFF</color> <!-- White for text on colored buttons -->
+
+    <color name="error_color">#D32F2F</color> <!-- Material Red 700 -->
+    <color name="colorOnError">#FFFFFFFF</color>
+
+    <!-- Original colors for reference or specific use if needed, can be removed later -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="image_placeholder_bg">#E0E0E0</color> <!-- Adjusted for better fit with new bg -->
+</resources>

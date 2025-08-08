@@ -1,0 +1,145 @@
+# CubeSolver App - Interview Preparation Notes
+
+This document provides a high-level overview of the CubeSolver Android application, focusing on key architectural components and logic flow.
+
+---
+
+### **How to Analyze This Code for an Interview**
+
+Here is a recommended strategy to effectively understand the codebase using the comments provided.
+
+**1. Start with the Big Picture (Top-Down Approach)**
+
+*   **Read these Notes First**: Begin by reading this `notes.txt` file in its entirety. It gives you a high-level summary of each component's role and how they fit together.
+*   **Check the `AndroidManifest.xml`**: Look at the manifest to understand the app's core components. You'll see the three main `Activity` declarations, the required `uses-permission` tags (Camera, Internet, etc.), and the `FileProvider` setup. This is the blueprint of the app.
+*   **Review `app/build.gradle.kts`**: Skim the dependencies section. This tells you what external libraries the app relies on (e.g., Jackson for JSON, Apache Commons for utilities). Knowing this helps you understand how certain problems are solved without reinventing the wheel.
+
+**2. Follow the User's Journey (Screen by Screen)**
+
+Trace the application flow exactly as a user would. This is the most intuitive way to understand the logic.
+
+*   **Screen 1: `MainActivity` (Image Capture)**
+    *   **Layout First**: Open `activity_main.xml`. Identify the key UI elements: the "Add Photo" button, the `GridLayout` for images, and the "Give Solution" button.
+    *   **Code Logic**: Now open `MainActivity.java`. In `onCreate`, see how these UI elements are linked to variables.
+    *   **Trace the Action**: Find the `setOnClickListener` for the "Add Photo" button. Follow this logic to see how it launches the Camera/Gallery (`Intent`) and handles permissions.
+    *   **Follow the Result**: Look at `onActivityResult` to understand how the app processes the image URI returned by the camera or gallery.
+    *   **The API Call**: Trace the "Give Solution" button's listener. Note the use of `ExecutorService` to move the network call off the main UI thread. See how `ImageUtils` is used to prepare the images.
+    *   **Data Handoff**: Observe how the results (matrices, cube size) are saved to `SharedPreferences` before starting the next activity.
+
+*   **Screen 2: `SolutionActivity` (Verification)**
+    *   **Dynamic Layout**: Look at `activity_solution.xml`. Notice the empty `LinearLayout` with the ID `cubeFacesContainer`. This is a key insight: the UI is built dynamically in the code.
+    *   **Code Logic**: Open `SolutionActivity.java`. In `onCreate`, see how it first loads data from `SharedPreferences`.
+    *   **Trace the UI Generation**: Follow the loop that programmatically creates a `MaterialCardView` for each of the 6 faces and adds it to the `cubeFacesContainer`. This is a great example of dynamic UI generation.
+    *   **User Edits**: Understand the color correction logic. A `showColorPickerDialog` is triggered on click, and any changes are stored in the `editedColors` map.
+    *   **Critical Logic**: Analyze the `generateKociembaStringAndProceed` method. This is a core part of the app's logic, where the visual color data is translated into a specific string format (`UUU...` or `WYG...`) that the solver API can understand.
+
+*   **Screen 3: `AlgorithmSolutionActivity` (The Solution)**
+    *   **Layout First**: Open `activity_algorithm_solution.xml`. Identify the `ConstraintLayout` for the 2D cube net and the stepper controls (`Previous`/`Next` buttons).
+    *   **Code Logic**: In `AlgorithmSolutionActivity.java`, see how it loads the solver string and matrices from `SharedPreferences`.
+    *   **Visualizing the Cube**: Analyze the `displayCubeNet` and `populateFaceGrid` methods to see how the `GridLayouts` are filled with colored squares to represent the cube's initial state.
+    *   **The Final API Call**: Trace the `solveCube` method, which makes the final API call to the solver.
+    *   **Interactive Solution**: Focus on how the API response (the solution moves) is handled. The string is split into a list (`solutionMovesList`), and the `updateStepUI` method displays one move at a time, making the solution interactive.
+
+**3. Dive into the Helper Class**
+
+*   **`ImageUtils.java`**: After understanding the main flow, review this class. You'll see how it cleanly separates the complex image handling logic (file creation, compression, Base64 encoding) from the Activities, following the principle of Separation of Concerns.
+
+---
+
+### 1. Project Configuration (`app/build.gradle.kts`)
+
+- **Core Functionality**: This file configures the Android application build.
+- **Key Dependencies**:
+    - `androidx.appcompat`, `com.google.android.material`: For UI components and backward compatibility.
+    - `androidx.constraintlayout`: For flexible and efficient UI design.
+    - `com.fasterxml.jackson.core`: (Jackson) For robust JSON parsing and generation, used for handling API responses and data serialization.
+    - `org.apache.commons.io`, `org.apache.commons.codec`: For utility functions, specifically for I/O operations (like copying streams) and Base64 encoding of images.
+- **SDK Versions**:
+    - `minSdk = 24` (Android 7.0 Nougat): The minimum Android version required to run the app.
+    - `targetSdk = 35`: The app is designed and tested for this Android version.
+    - `compileSdk = 35`: The app is compiled against this Android SDK version.
+- **Java Version**: The project uses Java 11.
+
+---
+
+### 2. Application Manifest (`AndroidManifest.xml`)
+
+- **Purpose**: Declares the fundamental components of the app to the Android system.
+- **Permissions**:
+    - `CAMERA`: To take pictures of the cube faces.
+    - `WRITE_EXTERNAL_STORAGE`: To save the captured images.
+    - `INTERNET`: To communicate with the Gemini and Kociemba solver APIs.
+- **App Components (Activities)**:
+    - `MainActivity`: The main entry point of the app (`LAUNCHER` activity).
+    - `SolutionActivity`: Displays the analyzed cube state and allows for user edits.
+    - `AlgorithmSolutionActivity`: Displays the final step-by-step solution.
+- **FileProvider**:
+    - A `FileProvider` is configured to securely share file URIs (for the camera intent), which is the modern and secure standard for file sharing on Android.
+
+---
+
+### 3. `MainActivity.java` & `activity_main.xml` (Image Capture & Initial Flow)
+
+- **Core Responsibility**: Manages the initial user interaction: capturing 6 images of the cube.
+- **Workflow**:
+    1.  The user is prompted to add photos via camera or gallery.
+    2.  The app requests `CAMERA` permission if needed.
+    3.  It uses an `Intent` to launch the camera (`MediaStore.ACTION_IMAGE_CAPTURE`) or gallery (`Intent.ACTION_PICK`).
+    4.  Captured images are saved as temporary files using the `ImageUtils` class.
+    5.  The URIs of the 6 images are stored in a list (`imageUris`).
+    6.  The captured images are displayed in a `GridLayout` in `activity_main.xml`.
+    7.  Once 6 images are captured, the "Give Solution" button appears.
+- **API Interaction**:
+    - When "Give Solution" is clicked, the app converts all 6 images to Base64 strings using `ImageUtils`.
+    - It sends these images to the **Gemini API** in a single request to analyze the colors of each face.
+    - The API is expected to return a JSON object containing the color matrices for each face and the cube size (2x2 or 3x3).
+- **Data Persistence**:
+    - The resulting color matrices, cube size, and image URIs are saved to `SharedPreferences` to be passed to the `SolutionActivity`.
+- **Concurrency**:
+    - `ExecutorService` is used to run network operations (API calls) on a background thread to avoid blocking the UI.
+
+---
+
+### 4. `SolutionActivity.java` & `activity_solution.xml` (Verification & Editing)
+
+- **Core Responsibility**: Allows the user to verify and correct the colors identified by the API.
+- **Workflow**:
+    1.  Loads the color matrices, cube size, and image URIs from `SharedPreferences`.
+    2.  Dynamically creates a UI where each cube face is displayed in a `MaterialCardView`.
+    3.  Each card shows the original image and a `GridLayout` of the identified colors.
+    4.  Each color square is clickable, opening a dialog for the user to select the correct color from a predefined list.
+    5.  User edits are tracked in a `HashMap` (`editedColors`).
+- **Data Processing**:
+    - When the "Proceed to Solution" button is clicked, it generates a **solver string**.
+    - For a **3x3 cube**, it creates a 54-character **Kociemba string** by mapping the center color of each face to a letter (U, R, F, D, L, B).
+    - For a **2x2 cube**, it creates a 24-character string using a different format (W, Y, G, B, O, R).
+    - The final cube state (as a JSON map) and the solver string are saved to `SharedPreferences`.
+- **UI**: The layout is built dynamically inside a `ScrollView` to accommodate all 6 faces.
+
+---
+
+### 5. `AlgorithmSolutionActivity.java` & `activity_algorithm_solution.xml` (Final Solution)
+
+- **Core Responsibility**: Fetches the solution algorithm and presents it to the user.
+- **Workflow**:
+    1.  Loads the solver string and the detailed cube matrices from `SharedPreferences`.
+    2.  Displays the initial cube state as a 2D unfolded net using `GridLayouts` within a `ConstraintLayout`. This provides a visual reference.
+    3.  Sends the solver string to the **Kociemba solver API**.
+    4.  The API returns a solution algorithm (e.g., "R U R' U'").
+- **Interactive UI**:
+    - The solution is presented as an interactive **stepper**.
+    - "Next" and "Previous" buttons allow the user to navigate through the moves one by one.
+    - A `TextView` displays the current move (e.g., "R'") and a human-readable description (e.g., "Right face counter-clockwise").
+    - A `ProgressBar` is shown while the solution is being calculated.
+
+---
+
+### 6. `ImageUtils.java` (Helper Class)
+
+- **Purpose**: A utility class to encapsulate all image handling logic, promoting code reuse and separation of concerns.
+- **Key Methods**:
+    - `createImageFile()`: Creates a unique, temporary file for storing a captured image.
+    - `compressAndSaveImage()`: Reduces image resolution and quality to minimize file size, which is crucial for efficient API calls.
+    - `saveGalleryImage()`: Copies an image from the gallery to the app's private storage to ensure persistent access.
+    - `imageToBase64WithEnhancedCompression()`: Converts an image into a Base64 string, applying aggressive compression for API transmission.
+    - `deleteUnusedTemporaryFiles()`: A cleanup utility to remove temporary image files that are no longer needed, saving storage space.

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+This is the layout file for AlgorithmSolutionActivity. It's designed to present the final solution to the user.
+The root is a ScrollView to ensure all content is accessible, even on smaller screens.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="?attr/android:colorBackground"
+    tools:context=".AlgorithmSolutionActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- The main title for the solution screen. -->
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cube Solution"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- A button to navigate back to the previous screen (SolutionActivity). -->
+        <Button
+            android:id="@+id/backButton"
+            style="@style/Widget.App.Button.Outlined"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back to Analysis"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- 
+        A CardView to display the initial state of the cube as a 2D unfolded net.
+        This provides a visual reference for the user.
+        -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cubeStateCard"
+            style="@style/Widget.App.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/cubeStateTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Current Cube State:"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- 
+                A HorizontalScrollView is used because the unfolded net of the cube can be wider than the screen.
+                -->
+                <HorizontalScrollView
+                    android:id="@+id/cubeNetScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cube_net_background" 
+                    android:padding="4dp">
+
+                    <!-- 
+                    A ConstraintLayout is used to position the 6 faces of the cube in a standard unfolded net layout.
+                    This provides precise control over the relative positions of the faces.
+                    -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cubeNetContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <!-- 
+                        Each face of the cube is represented by a GridLayout.
+                        The content of these grids (the colored squares) is populated programmatically in AlgorithmSolutionActivity.java.
+                        The layout constraints position each face relative to the Front Face (F).
+                        -->
+                        
+                        <!-- Up Face (U) -->
+                        <GridLayout
+                            android:id="@+id/upFaceGrid"
+                            android:layout_width="@dimen/face_size"
+                            android:layout_height="@dimen/face_size"
+                            android:columnCount="3" 
+                            android:rowCount="3"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/frontFaceGrid"
+                            app:layout_constraintBottom_toTopOf="@+id/frontFaceGrid"
+                            android:layout_marginBottom="1dp"/>
+
+                        <!-- Left Face (L) -->
+                        <GridLayout
+                            android:id="@+id/leftFaceGrid"
+                            android:layout_width="@dimen/face_size"
+                            android:layout_height="@dimen/face_size"
+                            android:columnCount="3"
+                            android:rowCount="3"
+                            app:layout_constraintTop_toTopOf="@+id/frontFaceGrid"
+                            app:layout_constraintEnd_toStartOf="@+id/frontFaceGrid"
+                            android:layout_marginEnd="1dp"/>
+
+                        <!-- Front Face (F) - This is the central anchor for the layout. -->
+                        <GridLayout
+                            android:id="@+id/frontFaceGrid"
+                            android:layout_width="@dimen/face_size"
+                            android:layout_height="@dimen/face_size"
+                            android:columnCount="3"
+                            android:rowCount="3"
+                            app:layout_constraintStart_toEndOf="@+id/leftFaceGrid"
+                            app:layout_constraintTop_toBottomOf="@+id/upFaceGrid" />
+
+                        <!-- Right Face (R) -->
+                        <GridLayout
+                            android:id="@+id/rightFaceGrid"
+                            android:layout_width="@dimen/face_size"
+                            android:layout_height="@dimen/face_size"
+                            android:columnCount="3"
+                            android:rowCount="3"
+                            app:layout_constraintTop_toTopOf="@+id/frontFaceGrid"
+                            app:layout_constraintStart_toEndOf="@+id/frontFaceGrid"
+                            android:layout_marginStart="1dp"/>
+
+                        <!-- Back Face (B) -->
+                        <GridLayout
+                            android:id="@+id/backFaceGrid"
+                            android:layout_width="@dimen/face_size"
+                            android:layout_height="@dimen/face_size"
+                            android:columnCount="3"
+                            android:rowCount="3"
+                            app:layout_constraintTop_toTopOf="@+id/frontFaceGrid"
+                            app:layout_constraintStart_toEndOf="@+id/rightFaceGrid"
+                            android:layout_marginStart="1dp"/>
+
+                        <!-- Down Face (D) -->
+                        <GridLayout
+                            android:id="@+id/downFaceGrid"
+                            android:layout_width="@dimen/face_size"
+                            android:layout_height="@dimen/face_size"
+                            android:columnCount="3"
+                            android:rowCount="3"
+                            app:layout_constraintTop_toBottomOf="@+id/frontFaceGrid"
+                            app:layout_constraintStart_toStartOf="@+id/frontFaceGrid"
+                            android:layout_marginTop="1dp"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- 
+        This CardView contains the solution steps and the interactive stepper controls.
+        -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/solutionCard"
+            style="@style/Widget.App.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/solutionTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Solution Algorithm:"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- A progress bar shown while the solution is being fetched from the API. -->
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
+
+                <!-- A TextView to display the current move and its description. -->
+                <TextView
+                    android:id="@+id/currentMoveText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="3"
+                    android:padding="12dp"
+                    android:background="@drawable/solution_text_background"
+                    android:text="Calculating solution..."
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="?attr/colorOnSurface"
+                    android:lineSpacingMultiplier="1.2"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- A TextView to indicate the current step number (e.g., "Step 1 of 20"). -->
+                <TextView
+                    android:id="@+id/stepIndicatorText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:layout_marginBottom="8dp"
+                    tools:text="Step 1 of 20"
+                    android:visibility="gone"/>
+
+                <!-- 
+                The layout for the stepper controls (Previous and Next buttons).
+                It is hidden initially and becomes visible once the solution is loaded.
+                -->
+                <LinearLayout
+                    android:id="@+id/stepperControlsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/previousButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Previous"
+                        android:layout_marginEnd="4dp"/>
+
+                    <Button
+                        android:id="@+id/nextButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Next"
+                        android:layout_marginStart="4dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

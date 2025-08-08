@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+The manifest file is the root of the Android application's source set. 
+It describes essential information about the app to the Android build tools, the Android operating system, and Google Play.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 
+    Permissions required by the application. 
+    The user must grant these permissions for the app to function correctly.
+    -->
+    <!-- Allows the app to access the device's camera. This is likely used for taking pictures of the cube. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Allows the app to write to the device's external storage. This might be used for saving images or other data. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- Allows the app to access the internet. This could be for fetching the solution algorithm from a server. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 
+    The `<application>` element contains the declaration of the application's components.
+    -->
+    <application
+        android:allowBackup="true"  <!-- Enables the app's data to be backed up and restored by the system. -->
+        android:dataExtractionRules="@xml/data_extraction_rules" <!-- Specifies rules for which files can be extracted from the device during a backup. -->
+        android:fullBackupContent="@xml/backup_rules" <!-- Specifies the full set of files to be backed up. -->
+        android:icon="@mipmap/ic_launcher" <!-- The application's icon. -->
+        android:label="@string/app_name" <!-- The application's name, displayed to the user. -->
+        android:roundIcon="@mipmap/ic_launcher_round" <!-- The application's round icon, used in some launchers. -->
+        android:supportsRtl="true" <!-- Declares that the app supports right-to-left layouts. -->
+        android:theme="@style/Theme.CubeSolver" <!-- The default theme for the application. -->
+        android:networkSecurityConfig="@xml/network_security_config" <!-- Specifies the network security configuration for the app. -->
+        tools:targetApi="31"> <!-- Informs the build tools about the target API level for which this manifest element is designed. -->
+
+        <!--
+        A FileProvider is a special subclass of ContentProvider that facilitates secure sharing of files
+        associated with an app by creating a content:// Uri for a file instead of a file:/// Uri.
+        This is the modern, secure way to share files between apps.
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.cubesolver.fileprovider" <!-- A unique authority for the provider. -->
+            android:exported="false" <!-- The provider is not available to other apps. -->
+            android:grantUriPermissions="true"> <!-- Allows granting temporary access to files via URIs. -->
+            <!-- Meta-data for the FileProvider, specifying the paths that can be shared. -->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- 
+        Declaration of the activities in the application. 
+        An activity is a single, focused thing that the user can do.
+        -->
+        
+        <!-- Declares the AlgorithmSolutionActivity. `android:exported="false"` means it can only be launched by this app. -->
+        <activity
+            android:name=".AlgorithmSolutionActivity"
+            android:exported="false" />
+
+        <!-- Declares the SolutionActivity. `android:exported="false"` means it can only be launched by this app. -->
+        <activity
+            android:name=".SolutionActivity"
+            android:exported="false" />
+
+        <!-- 
+        Declares the MainActivity. This is the main entry point of the application.
+        `android:exported="true"` means it can be launched by other apps (in this case, the launcher).
+        -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <!-- 
+            The intent filter specifies the types of intents that an activity can respond to.
+            -->
+            <intent-filter>
+                <!-- This action indicates that this activity is the main entry point of the application. -->
+                <action android:name="android.intent.action.MAIN" />
+
+                <!-- This category indicates that this activity should be listed in the system's application launcher. -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

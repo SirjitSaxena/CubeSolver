@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+This is the layout file for MainActivity. It defines the user interface for the main screen of the app.
+It uses a ConstraintLayout as the root element, which allows for flexible and efficient positioning of UI components.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/android:colorBackground"
+    tools:context=".MainActivity">
+
+    <!-- A TextView to display the title of the application. -->
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cube Solver"
+        android:textAppearance="?attr/textAppearanceHeadline4"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 
+    The main button for the user to start the process of adding photos.
+    Initially, this is the primary call to action.
+    -->
+    <Button
+        android:id="@+id/button"
+        style="@style/Widget.App.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Photo"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/appTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 
+    A ScrollView to contain the grid of images. This ensures that the layout is scrollable
+    if the content exceeds the screen height, which is good practice for supporting various screen sizes.
+    -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/solutionButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fillViewport="true">
+
+        <!-- 
+        A GridLayout to display the 6 captured images in a 2-column grid.
+        This provides a structured and organized way to show the photos of the cube faces.
+        -->
+        <GridLayout
+            android:id="@+id/imageGridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2" 
+            android:rowCount="3"
+            android:padding="8dp"
+            android:alignmentMode="alignMargins"
+            android:columnOrderPreserved="false"
+            android:useDefaultMargins="true">
+
+            <!-- CardView for the first image. Each image and its retake button are wrapped in a CardView for a better visual appearance. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardView1"
+                style="@style/Widget.App.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+                    <!-- ImageView to display the first captured photo. -->
+                    <ImageView
+                        android:id="@+id/imageView1"
+                        style="@style/ImagePreview"
+                        android:layout_marginBottom="8dp"/>
+                    <!-- Button to retake the first photo. -->
+                    <Button
+                        android:id="@+id/retakeButton1"
+                        style="@style/Widget.App.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Retake Face 1"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CardView for the second image. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardView2"
+                style="@style/Widget.App.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        style="@style/ImagePreview"
+                        android:layout_marginBottom="8dp"/>
+                    <Button
+                        android:id="@+id/retakeButton2"
+                        style="@style/Widget.App.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Retake Face 2"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CardView for the third image. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardView3"
+                style="@style/Widget.App.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        style="@style/ImagePreview"
+                        android:layout_marginBottom="8dp"/>
+                    <Button
+                        android:id="@+id/retakeButton3"
+                        style="@style/Widget.App.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Retake Face 3"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CardView for the fourth image. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardView4"
+                style="@style/Widget.App.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        style="@style/ImagePreview"
+                        android:layout_marginBottom="8dp"/>
+                    <Button
+                        android:id="@+id/retakeButton4"
+                        style="@style/Widget.App.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Retake Face 4"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CardView for the fifth image. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardView5"
+                style="@style/Widget.App.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        style="@style/ImagePreview"
+                        android:layout_marginBottom="8dp"/>
+                    <Button
+                        android:id="@+id/retakeButton5"
+                        style="@style/Widget.App.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Retake Face 5"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CardView for the sixth image. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardView6"
+                style="@style/Widget.App.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+                    <ImageView
+                        android:id="@+id/imageView6"
+                        style="@style/ImagePreview"
+                        android:layout_marginBottom="8dp"/>
+                    <Button
+                        android:id="@+id/retakeButton6"
+                        style="@style/Widget.App.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Retake Face 6"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </GridLayout>
+    </ScrollView>
+
+    <!-- 
+    The button to trigger the image processing and get the solution.
+    It is initially hidden and becomes visible only after all 6 photos are taken.
+    -->
+    <Button
+        android:id="@+id/solutionButton"
+        style="@style/Widget.App.Button.Accent" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Give Solution"
+        android:visibility="gone" 
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- 
+    A ProgressBar to indicate that the images are being processed.
+    It is shown when the "Give Solution" button is clicked and hidden when processing is complete.
+    -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

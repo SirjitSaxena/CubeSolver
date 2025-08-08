@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+This is the layout file for SolutionActivity. It's designed to display the results of the cube analysis.
+The root element is a ScrollView, which is essential because the content, especially the 6 cube faces,
+will likely exceed the screen height on most devices.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="?attr/android:colorBackground"
+    tools:context=".SolutionActivity">
+
+    <!-- 
+    The main content is wrapped in a vertical LinearLayout. This layout will hold the header,
+    the dynamically generated cube faces, and the action buttons at the bottom.
+    -->
+    <LinearLayout
+        android:id="@+id/mainContentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 
+        The top section is a MaterialCardView that acts as a header.
+        It provides context to the user about what this screen is for.
+        -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/headerCard"
+            style="@style/Widget.App.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- The main title of the screen. -->
+                <TextView
+                    android:id="@+id/titleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cube Faces Analysis"
+                    android:textAppearance="?attr/textAppearanceHeadline5"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- A subtitle providing instructions to the user. -->
+                <TextView
+                    android:id="@+id/subTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Review and edit misidentified colors if necessary."
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:gravity="center"
+                    android:textColor="?attr/colorOnSurface" 
+                    android:alpha="0.87"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- A button to navigate back to the previous screen (MainActivity). -->
+                <Button
+                    android:id="@+id/backButton"
+                    style="@style/Widget.App.Button.Outlined"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back to Camera"
+                    android:layout_gravity="start"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- 
+        This LinearLayout is a container where the views for each of the 6 cube faces will be added programmatically.
+        In SolutionActivity.java, a MaterialCardView containing the image and color grid for each face is created and inserted here.
+        -->
+        <LinearLayout
+            android:id="@+id/cubeFacesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+            <!-- Cube face layouts (preferably MaterialCardViews) will be added here programmatically -->
+        </LinearLayout>
+
+
+        <!-- 
+        This section at the bottom contains the main action buttons for this screen.
+        -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <!-- A button to save any manual color corrections made by the user. -->
+            <Button
+                android:id="@+id/saveButton"
+                style="@style/Widget.App.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Changes"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- The final action button to proceed to the next step, which is generating and displaying the solution. -->
+            <Button
+                android:id="@+id/proceedButton"
+                style="@style/Widget.App.Button.Accent" 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Proceed to Solution"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
